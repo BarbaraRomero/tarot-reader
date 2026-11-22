@@ -8,7 +8,7 @@ A classroom tarot app. Students type a question, draw three random cards (Past Â
 - The AI runs entirely in the browser with [Transformers.js](https://huggingface.co/docs/transformers.js):
   - **Llama 3.2 1B Instruct** on computers with WebGPU (recent Chrome/Edge), about 1.2 GB, downloaded once
   - **Qwen 2.5 0.5B Instruct** as a fallback elsewhere (smaller, simpler readings)
-- The AI writes one short reading, "The message of the three cards", in English (about 4 seconds once loaded)
+- The AI writes a short paragraph per card plus a short final message, in English (about 6 seconds once loaded), and names the model that wrote it
 - The model starts downloading as soon as the cards are drawn, while students write
 - Questions should be asked in English
 

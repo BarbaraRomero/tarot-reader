@@ -158,13 +158,16 @@
   #ai-status { color: var(--ink-soft); font-style: italic; font-size: 1.05rem; margin-top: 12px; }
   .ai-head { font-family: var(--caps); font-weight: 400; color: var(--vermilion); font-size: 1.35rem; letter-spacing: 1px; margin: 18px 0 6px; text-align: center; }
   .ai-para { margin: 0 auto 6px; max-width: 46em; }
-  .ai-para::first-letter { font-family: var(--title); color: var(--vermilion); font-size: 2.6em; float: left; line-height: .85; padding: 6px 6px 0 0; }
+  #ai-text > p.ai-para:first-of-type::first-letter { font-family: var(--title); color: var(--vermilion); font-size: 2.6em; float: left; line-height: .85; padding: 6px 6px 0 0; }
   #ai-text { font-size: 1.2rem; line-height: 1.7; margin-top: 12px; text-align: left; }
   #ai-text .cursor { display: inline-block; width: .5em; animation: blinkc 1s steps(1) infinite; color: var(--vermilion); }
   @keyframes blinkc { 50% { opacity: 0 } }
 
   .note { font-size: 1rem; color: var(--ink-soft); text-align: center; font-style: italic; }
   footer { text-align: center; color: var(--ink-soft); font-size: 1rem; margin-top: 30px; }
+  footer a { color: var(--vermilion); }
+  .model-credits { font-size: .95rem; }
+  .ai-model { text-align: center; font-style: italic; color: var(--ink-soft); font-size: 1rem; margin-top: 14px; }
   footer .credits { font-family: var(--caps); color: var(--ink); font-size: 1.15rem; letter-spacing: .5px; }
   footer .credits::before { content: "❦ "; color: var(--vermilion); }
   [hidden] { display: none !important; }
@@ -245,6 +248,7 @@
   <footer>
     <p class="credits">Credits: by Bárbara Romero Ferrón,<br>with the invaluable help of Claude</p>
     <p>Card art by Pamela Colman Smith (1909). Card meanings from A. E. Waite, <i>The Pictorial Key to the Tarot</i> (1910). Both in the public domain.</p>
+    <p class="model-credits">AI readings: <a href="https://huggingface.co/meta-llama/Llama-3.2-1B-Instruct">Llama 3.2 1B Instruct</a> by Meta (Built with Llama), or <a href="https://huggingface.co/Qwen/Qwen2.5-0.5B-Instruct">Qwen 2.5 0.5B Instruct</a> by Alibaba on devices without WebGPU. Both run inside your browser with <a href="https://huggingface.co/docs/transformers.js">Transformers.js</a> by Hugging Face.</p>
   </footer>
 </main>
 
@@ -356,11 +360,11 @@ async function pickBackend() {
   try {
     const adapter = await navigator.gpu?.requestAdapter();
     if (adapter && adapter.features.has("shader-f16")) {
-      return { model: "onnx-community/Llama-3.2-1B-Instruct-q4f16", device: "webgpu", dtype: "q4f16", size: "1.2 GB" };
+      return { model: "onnx-community/Llama-3.2-1B-Instruct-q4f16", device: "webgpu", dtype: "q4f16", size: "1.2 GB", name: "Llama 3.2 1B Instruct (Meta)" };
     }
   } catch (e) { /* no WebGPU */ }
   // Fallback for devices without WebGPU: smaller and simpler, but works almost everywhere.
-  return { model: "onnx-community/Qwen2.5-0.5B-Instruct", device: "wasm", dtype: "q8", size: "500 MB" };
+  return { model: "onnx-community/Qwen2.5-0.5B-Instruct", device: "wasm", dtype: "q8", size: "500 MB", name: "Qwen 2.5 0.5B Instruct (Alibaba)" };
 }
 
 function loadOracle() {
@@ -403,19 +407,33 @@ function cardLine({ card, reversed, position }) {
     `Traditional meaning: ${reversed ? card.reversed : card.upright}.`;
 }
 
-// A single short reading: the message of the three cards.
+// One short paragraph per card, then a short final message.
 function buildSteps() {
-  return [{
+  const steps = reading.cards.map((c) => ({
+    title: `${c.position} · ${c.card.name}${c.reversed ? " (reversed)" : ""}`,
+    messages: [
+      { role: "system", content: SYSTEM },
+      { role: "user", content:
+        `The student's question: "${reading.question}"\n\n` +
+        `The card in the ${c.position.toUpperCase()} position is ${c.card.name}${c.reversed ? ", reversed" : ""}.\n` +
+        (c.card.description ? `Picture on the card: ${c.card.description}\n` : "") +
+        `Traditional meaning: ${c.reversed ? c.card.reversed : c.card.upright}.\n\n` +
+        `In 1 or 2 short, simple sentences, say what this card in the ${c.position.toLowerCase()} position suggests about the question.` },
+    ],
+    tokens: 70,
+  }));
+  steps.push({
     title: "The message of the three cards",
     messages: [
       { role: "system", content: SYSTEM },
       { role: "user", content:
         `The student's question: "${reading.question}"\n\nThe three cards:\n` +
         reading.cards.map(cardLine).join("\n") +
-        `\n\nIn 3 or 4 simple sentences in English, combine the past, present and future cards into one encouraging message that answers the student's question.` },
+        `\n\nIn 2 or 3 short, simple sentences, combine the past, present and future cards into one encouraging message that answers the question.` },
     ],
-    tokens: 150,
-  }];
+    tokens: 100,
+  });
+  return steps;
 }
 
 const clean = (t) => t.replace(/\*\*|__|^#+\s*/gm, "").trim();
@@ -448,6 +466,7 @@ $("reveal").onclick = async () => {
       await gen(step.messages, { max_new_tokens: step.tokens, do_sample: true, temperature: 0.7, top_p: 0.9, repetition_penalty: 1.1, streamer });
       para.textContent = finish(text);
     }
+    out.append(el("p", "ai-model", `This reading was written by ${gen.backend.name}, running on your device.`));
     setStatus("❦ Compare: what did the AI notice that you didn't? What did you see that it missed?");
     $("again-row").hidden = false;
   } catch (err) {
