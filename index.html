@@ -6,145 +6,167 @@
 <title>Three-Card Oracle</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Cinzel+Decorative:wght@700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=IM+Fell+DW+Pica+SC&display=swap" rel="stylesheet">
 <style>
   :root {
-    --night: #0b0819;
-    --deep: #160f33;
-    --violet: #2a1b5c;
-    --plum: #4b2a7b;
-    --gold: #d9b45b;
-    --gold-soft: #f1dca0;
-    --ivory: #f4ecd8;
-    --muted: #b7a9cf;
-    --rose: #e7a3c4;
-    --serif: "Cormorant Garamond", Georgia, serif;
-    --display: "Cinzel", Georgia, serif;
+    --paper: #efe2c4;
+    --paper-light: #f8f0dc;
+    --paper-dark: #d9c59b;
+    --ink: #2a1f16;
+    --ink-soft: #5b4a38;
+    --vermilion: #a3302a;
+    --ochre: #c08a2e;
+    --sage: #66784f;
+    --sky: #7d9fb0;
+    --body: "IM Fell English", Georgia, serif;
+    --caps: "IM Fell English SC", Georgia, serif;
+    --title: "IM Fell DW Pica SC", Georgia, serif;
+    /* paper grain */
+    --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .25 0 0 0 0 .12 0 0 0 .16 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
   * { box-sizing: border-box; }
-  html { background: var(--night); }
+  html { background: #3a2a1c; }
   body {
-    margin: 0; color: var(--ivory); font: 20px/1.55 var(--serif); min-height: 100vh;
+    margin: 0; color: var(--ink); font: 20px/1.55 var(--body); min-height: 100vh;
     background:
-      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(120, 70, 200, .45), transparent 70%),
-      radial-gradient(ellipse 60% 40% at 100% 100%, rgba(217, 180, 91, .12), transparent 70%),
-      linear-gradient(180deg, var(--deep), var(--night) 70%);
-    background-attachment: fixed;
+      var(--grain),
+      radial-gradient(ellipse at center, transparent 55%, rgba(90, 60, 25, .35) 100%),
+      var(--paper);
   }
-  /* starfield */
-  .stars, .stars::after {
-    position: fixed; inset: 0; pointer-events: none; z-index: 0; content: "";
-    background-image:
-      radial-gradient(1px 1px at 10% 20%, #fff, transparent 60%),
-      radial-gradient(1px 1px at 30% 70%, #fff, transparent 60%),
-      radial-gradient(1.5px 1.5px at 55% 15%, var(--gold-soft), transparent 60%),
-      radial-gradient(1px 1px at 75% 40%, #fff, transparent 60%),
-      radial-gradient(1px 1px at 90% 80%, #fff, transparent 60%),
-      radial-gradient(1.5px 1.5px at 20% 90%, var(--gold-soft), transparent 60%),
-      radial-gradient(1px 1px at 65% 60%, #fff, transparent 60%),
-      radial-gradient(1px 1px at 45% 45%, #fff, transparent 60%);
-    background-size: 420px 420px;
-    opacity: .7;
-  }
-  .stars::after { background-size: 260px 260px; animation: twinkle 5s ease-in-out infinite alternate; opacity: .5; }
-  @keyframes twinkle { from { opacity: .15 } to { opacity: .7 } }
 
-  main { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; padding: 40px 16px 80px; }
+  main { max-width: 1060px; margin: 0 auto; padding: 36px 16px 70px; }
 
-  header { text-align: center; margin-bottom: 36px; }
-  .sigil { color: var(--gold); letter-spacing: 14px; font-size: 1.1rem; }
+  /* ---------- header ---------- */
+  header { text-align: center; margin-bottom: 30px; }
+  .sun { width: 120px; height: 120px; display: block; margin: 0 auto 4px; }
+  .sun .ray { fill: var(--ochre); }
   h1 {
-    font-family: "Cinzel Decorative", var(--display); font-weight: 700;
-    font-size: clamp(2rem, 6vw, 3.6rem); line-height: 1.15; margin: 10px 0;
-    background: linear-gradient(180deg, #fff6d8, var(--gold) 60%, #9c7a2c);
-    -webkit-background-clip: text; background-clip: text; color: transparent;
-    filter: drop-shadow(0 0 18px rgba(217, 180, 91, .35));
+    font-family: var(--title); font-weight: 400; color: var(--ink);
+    font-size: clamp(2.1rem, 6.5vw, 3.8rem); line-height: 1.05; margin: 4px 0 6px; letter-spacing: 1px;
   }
-  .tagline { color: var(--muted); font-style: italic; font-size: 1.25rem; margin: 0; }
+  h1 .first { color: var(--vermilion); }
+  .tagline { font-style: italic; color: var(--ink-soft); font-size: 1.25rem; margin: 0; }
+  .flourish { display: block; width: min(420px, 90%); height: 34px; margin: 14px auto 0; }
+  .flourish path { fill: none; stroke: var(--ink); stroke-width: 1.4; stroke-linecap: round; }
+  .flourish .bud { fill: var(--vermilion); stroke: none; }
+
+  /* ---------- panels: framed like an old book plate ---------- */
+  .panel {
+    position: relative; margin-bottom: 30px; padding: 30px 26px 26px;
+    background: var(--grain), linear-gradient(180deg, var(--paper-light), #f2e6cb);
+    border: 2px solid var(--ink);
+    outline: 1px solid var(--ink); outline-offset: -9px;
+    box-shadow: 0 1px 0 rgba(255,255,255,.5) inset, 6px 8px 0 rgba(42, 31, 22, .12);
+  }
+  .panel::before, .panel::after {
+    content: "❦"; position: absolute; color: var(--vermilion); font-size: 1.3rem; line-height: 1;
+    background: var(--paper-light); padding: 0 4px;
+  }
+  .panel::before { top: -12px; left: 50%; transform: translateX(-50%); }
+  .panel::after { bottom: -12px; left: 50%; transform: translateX(-50%) rotate(180deg); background: #f2e6cb; }
 
   h2 {
-    font-family: var(--display); font-weight: 500; letter-spacing: 3px; text-transform: uppercase;
-    font-size: 1.05rem; color: var(--gold); margin: 0 0 14px; text-align: center;
+    font-family: var(--caps); font-weight: 400; font-size: 1.45rem; letter-spacing: 1.5px;
+    color: var(--ink); margin: 0 0 16px; text-align: center;
   }
-  h2::before, h2::after { content: " ✦ "; color: var(--plum); }
+  h2 .num { color: var(--vermilion); }
+  h2::before { content: "☙  "; color: var(--sage); }
+  h2::after { content: "  ❧"; color: var(--sage); }
 
-  .panel {
-    background: linear-gradient(180deg, rgba(42, 27, 92, .55), rgba(22, 15, 51, .7));
-    border: 1px solid rgba(217, 180, 91, .45); border-radius: 18px;
-    padding: 26px 22px; margin-bottom: 28px; position: relative;
-    box-shadow: 0 0 40px rgba(75, 42, 123, .35), inset 0 0 0 4px rgba(11, 8, 25, .6), inset 0 0 0 5px rgba(217, 180, 91, .18);
-  }
-
+  /* ---------- inputs: ruled notebook paper ---------- */
   textarea {
-    width: 100%; border-radius: 12px; border: 1px solid rgba(217, 180, 91, .5);
-    background: rgba(11, 8, 25, .7); color: var(--ivory); padding: 14px 16px;
-    font: 1.15rem/1.5 var(--serif); resize: vertical;
+    width: 100%; border: 1.5px solid var(--ink-soft); border-radius: 2px; resize: vertical;
+    color: var(--ink); font: 1.2rem/1.9rem var(--body); padding: 0 14px; padding-top: .2rem;
+    background:
+      repeating-linear-gradient(180deg, transparent 0 calc(1.9rem - 1px), rgba(125, 159, 176, .55) calc(1.9rem - 1px) 1.9rem),
+      #fbf6e9;
+    background-attachment: local;
   }
-  textarea:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 16px rgba(217, 180, 91, .35); }
-  textarea::placeholder { color: #8a7da6; font-style: italic; }
+  textarea:focus { outline: 2px solid var(--ochre); outline-offset: 2px; }
+  textarea::placeholder { color: #9b8a72; font-style: italic; }
+  textarea[readonly] { opacity: .8; }
 
-  .actions { display: flex; justify-content: center; gap: 12px; margin-top: 16px; flex-wrap: wrap; }
+  .actions { display: flex; justify-content: center; gap: 12px; margin-top: 18px; flex-wrap: wrap; }
   button {
-    font-family: var(--display); letter-spacing: 2px; text-transform: uppercase; font-size: .85rem;
-    color: var(--night); background: linear-gradient(180deg, #f3dc98, var(--gold) 55%, #a8842f);
-    border: 0; border-radius: 999px; padding: 13px 26px; cursor: pointer;
-    box-shadow: 0 0 18px rgba(217, 180, 91, .35); transition: transform .15s, box-shadow .15s;
+    font-family: var(--caps); font-size: 1.15rem; letter-spacing: 1px;
+    color: var(--paper-light); background: var(--vermilion);
+    border: 2px solid var(--ink); border-radius: 3px; padding: 10px 26px; cursor: pointer;
+    box-shadow: 3px 3px 0 var(--ink); transition: transform .1s, box-shadow .1s;
   }
-  button:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 0 28px rgba(217, 180, 91, .6); }
-  button:disabled { opacity: .4; cursor: not-allowed; box-shadow: none; }
-  button.ghost { background: transparent; color: var(--gold-soft); border: 1px solid rgba(217, 180, 91, .6); box-shadow: none; }
-  .hint { color: var(--muted); font-style: italic; text-align: center; margin: 10px 0 0; font-size: 1.05rem; }
+  button:hover:not(:disabled) { background: #b8392f; }
+  button:active:not(:disabled) { transform: translate(3px, 3px); box-shadow: 0 0 0 var(--ink); }
+  button:disabled { opacity: .45; cursor: not-allowed; }
+  button.ghost { background: transparent; color: var(--ink); }
+  button.ghost:hover:not(:disabled) { background: rgba(192, 138, 46, .15); }
+  .hint { color: var(--ink-soft); font-style: italic; text-align: center; margin: 12px 0 0; font-size: 1.05rem; }
 
-  .question-echo { text-align: center; font-style: italic; font-size: 1.35rem; color: var(--gold-soft); margin: 0 0 22px; }
+  .question-echo { text-align: center; font-style: italic; font-size: 1.4rem; margin: 0 0 24px; }
+  .question-echo::before, .question-echo::after { color: var(--vermilion); }
 
-  /* spread */
-  .spread { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+  /* ---------- the spread ---------- */
+  .spread { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
   @media (max-width: 820px) { .spread { grid-template-columns: 1fr; max-width: 420px; margin: 0 auto; } }
   .slot { display: flex; flex-direction: column; align-items: center; }
-  .position { font-family: var(--display); letter-spacing: 4px; text-transform: uppercase; color: var(--rose); font-size: .85rem; margin-bottom: 10px; }
+  .position {
+    font-family: var(--caps); font-size: 1.15rem; letter-spacing: 3px; color: var(--vermilion); margin-bottom: 10px;
+  }
+  .position::before { content: "— "; color: var(--ink-soft); }
+  .position::after { content: " —"; color: var(--ink-soft); }
   .card { width: 190px; aspect-ratio: 300 / 527; perspective: 1000px; margin-bottom: 16px; }
   .card-inner { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform 1s cubic-bezier(.3,.7,.2,1); }
   .card.flipped .card-inner { transform: rotateY(180deg); }
-  .face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 10px; overflow: hidden;
-    box-shadow: 0 0 0 2px rgba(217, 180, 91, .7), 0 10px 30px rgba(0, 0, 0, .6), 0 0 30px rgba(217, 180, 91, .2); }
+  .face {
+    position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; overflow: hidden;
+    border-radius: 6px; border: 2px solid var(--ink); background: var(--paper-light);
+    box-shadow: 5px 6px 0 rgba(42, 31, 22, .25);
+  }
   .face img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .front { transform: rotateY(180deg); }
   .card.reversed .front img { transform: rotate(180deg); }
-  .card.flipped { animation: glow 2.5s ease-in-out 1s infinite alternate; border-radius: 10px; }
-  @keyframes glow { to { filter: drop-shadow(0 0 14px rgba(217, 180, 91, .55)); } }
 
   .info { width: 100%; text-align: left; opacity: 0; transform: translateY(8px); transition: opacity .8s .6s, transform .8s .6s; }
   .slot.revealed .info { opacity: 1; transform: none; }
-  .card-name { font-family: var(--display); font-size: 1.15rem; color: var(--gold-soft); text-align: center; margin: 0; }
-  .card-meta { text-align: center; color: var(--muted); font-size: .95rem; margin: 2px 0 10px; letter-spacing: 1px; }
-  .badge { display: inline-block; font-family: var(--display); font-size: .7rem; letter-spacing: 2px; padding: 2px 10px; border-radius: 999px;
-    border: 1px solid var(--rose); color: var(--rose); margin-left: 6px; vertical-align: middle; }
-  .meaning { margin: 0 0 10px; padding: 10px 12px; border-radius: 10px; background: rgba(11, 8, 25, .45); border-left: 3px solid rgba(183, 169, 207, .35); font-size: 1.05rem; }
-  .meaning b { font-family: var(--display); font-weight: 500; letter-spacing: 1.5px; font-size: .75rem; text-transform: uppercase; color: var(--muted); display: block; }
-  .meaning.active { border-left-color: var(--gold); background: rgba(217, 180, 91, .09); }
-  .meaning.active b { color: var(--gold); }
-  .meaning.inactive { opacity: .55; }
-  .picture { font-style: italic; color: var(--muted); margin: 0 0 10px; font-size: 1.02rem; }
-
-  /* AI reveal */
-  .veil { text-align: center; }
-  .veil .orb {
-    width: 92px; height: 92px; border-radius: 50%; margin: 6px auto 14px;
-    background: radial-gradient(circle at 35% 30%, #fff 0, #d9c8ff 12%, #7b55c9 45%, #2a1b5c 75%);
-    box-shadow: 0 0 40px rgba(155, 120, 230, .65), inset 0 0 20px rgba(255, 255, 255, .3);
-    animation: orb 4s ease-in-out infinite;
+  .card-name { font-family: var(--caps); font-size: 1.35rem; text-align: center; margin: 0; line-height: 1.2; }
+  .card-meta { text-align: center; color: var(--ink-soft); font-style: italic; font-size: 1rem; margin: 2px 0 10px; }
+  .badge {
+    display: inline-block; font-family: var(--caps); font-size: .85rem; letter-spacing: 1px; padding: 0 8px;
+    border: 1.5px solid var(--vermilion); color: var(--vermilion); border-radius: 2px; margin-left: 6px; vertical-align: 2px;
+    transform: rotate(-3deg);
   }
-  @keyframes orb { 50% { transform: scale(1.06); box-shadow: 0 0 60px rgba(217, 180, 91, .6), inset 0 0 20px rgba(255, 255, 255, .3); } }
-  #ai-status { color: var(--muted); font-style: italic; font-size: 1rem; margin-top: 10px; }
-  .ai-head { font-family: var(--display); font-weight: 500; color: var(--gold); font-size: 1rem; letter-spacing: 2px; margin: 18px 0 4px; }
-  .ai-para { margin: 0 0 6px; }
-  #ai-text { font-size: 1.15rem; line-height: 1.65; margin-top: 12px; text-align: left; }
-  #ai-text .cursor { display: inline-block; width: .5em; animation: blinkc 1s steps(1) infinite; color: var(--gold); }
+  .picture { font-style: italic; color: var(--ink-soft); margin: 0 0 10px; font-size: 1.05rem; text-align: center; }
+  .meaning { margin: 0 0 10px; padding: 8px 12px; border-left: 3px solid var(--paper-dark); font-size: 1.08rem; }
+  .meaning b { font-family: var(--caps); font-weight: 400; font-size: 1rem; letter-spacing: 1px; color: var(--ink-soft); display: block; }
+  .meaning.active { border-left-color: var(--vermilion); background: rgba(192, 138, 46, .16); }
+  .meaning.active b { color: var(--vermilion); }
+  .meaning.inactive { opacity: .5; }
+
+  /* ---------- the AI reading, sealed with wax ---------- */
+  .veil { text-align: center; }
+  .seal {
+    width: 96px; height: 96px; margin: 2px auto 16px; position: relative;
+    display: grid; place-items: center; color: #f3d9b8; font-family: var(--title); font-size: 2.2rem;
+    border-radius: 47% 53% 50% 50% / 52% 48% 52% 48%;
+    background: radial-gradient(circle at 38% 32%, #d0574b, var(--vermilion) 45%, #6e1a16 100%);
+    box-shadow: 0 0 0 5px rgba(163, 48, 42, .35), 3px 5px 8px rgba(42, 31, 22, .45), inset 0 0 0 9px rgba(0,0,0,.12);
+    transition: transform .6s;
+  }
+  .seal::after {
+    content: ""; position: absolute; inset: 14px; border-radius: 50%;
+    border: 2px dashed rgba(243, 217, 184, .55);
+  }
+  .veil.opened .seal { transform: rotate(-12deg) scale(.85); opacity: .7; }
+  #ai-status { color: var(--ink-soft); font-style: italic; font-size: 1.05rem; margin-top: 12px; }
+  .ai-head { font-family: var(--caps); font-weight: 400; color: var(--vermilion); font-size: 1.35rem; letter-spacing: 1px; margin: 18px 0 6px; text-align: center; }
+  .ai-para { margin: 0 auto 6px; max-width: 46em; }
+  .ai-para::first-letter { font-family: var(--title); color: var(--vermilion); font-size: 2.6em; float: left; line-height: .85; padding: 6px 6px 0 0; }
+  #ai-text { font-size: 1.2rem; line-height: 1.7; margin-top: 12px; text-align: left; }
+  #ai-text .cursor { display: inline-block; width: .5em; animation: blinkc 1s steps(1) infinite; color: var(--vermilion); }
   @keyframes blinkc { 50% { opacity: 0 } }
 
-  .note { font-size: .95rem; color: var(--muted); text-align: center; font-style: italic; }
-  footer { text-align: center; color: var(--muted); font-size: 1rem; margin-top: 30px; }
-  footer .credits { font-family: var(--display); color: var(--gold-soft); letter-spacing: 1px; font-size: .95rem; }
+  .note { font-size: 1rem; color: var(--ink-soft); text-align: center; font-style: italic; }
+  footer { text-align: center; color: var(--ink-soft); font-size: 1rem; margin-top: 30px; }
+  footer .credits { font-family: var(--caps); color: var(--ink); font-size: 1.15rem; letter-spacing: .5px; }
+  footer .credits::before { content: "❦ "; color: var(--vermilion); }
   [hidden] { display: none !important; }
 
   @media (prefers-reduced-motion: reduce) {
@@ -153,55 +175,75 @@
 </style>
 </head>
 <body>
-<div class="stars"></div>
 <main>
   <header>
-    <div class="sigil">☾ ✦ ☉ ✦ ☽</div>
-    <h1>The Three-Card Oracle</h1>
+    <svg class="sun" viewBox="-60 -60 120 120" aria-hidden="true">
+      <g id="rays">
+        <polygon fill="#c08a2e" stroke="#2a1f16" stroke-width=".8" points="0,-58 5,-33 -5,-33"/>
+        <polygon fill="#2a1f16" points="0,-47 3,-33 -3,-33" transform="rotate(11.25)"/>
+      </g>
+      <use href="#rays" transform="rotate(22.5)"/><use href="#rays" transform="rotate(45)"/>
+      <use href="#rays" transform="rotate(67.5)"/><use href="#rays" transform="rotate(90)"/>
+      <use href="#rays" transform="rotate(112.5)"/><use href="#rays" transform="rotate(135)"/>
+      <use href="#rays" transform="rotate(157.5)"/><use href="#rays" transform="rotate(180)"/>
+      <use href="#rays" transform="rotate(202.5)"/><use href="#rays" transform="rotate(225)"/>
+      <use href="#rays" transform="rotate(247.5)"/><use href="#rays" transform="rotate(270)"/>
+      <use href="#rays" transform="rotate(292.5)"/><use href="#rays" transform="rotate(315)"/>
+      <use href="#rays" transform="rotate(337.5)"/>
+      <circle r="30" fill="#e7b64a" stroke="#2a1f16" stroke-width="2"/>
+      <circle r="24" fill="none" stroke="#2a1f16" stroke-width="1" stroke-dasharray="2 3"/>
+      <path d="M-11,-6 q4,-4 8,0 M3,-6 q4,-4 8,0 M-8,10 q8,6 16,0" fill="none" stroke="#2a1f16" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+    <h1><span class="first">T</span>he Three-Card Oracle</h1>
     <p class="tagline">Ask a question. Draw three cards. Read what they whisper.</p>
+    <svg class="flourish" viewBox="0 0 420 34" aria-hidden="true">
+      <path d="M10,17 C60,17 70,4 110,10 C140,15 150,28 180,22 C195,19 200,12 210,12 C220,12 225,19 240,22 C270,28 280,15 310,10 C350,4 360,17 410,17"/>
+      <path d="M150,24 c-6,6 -16,6 -20,0 M270,24 c6,6 16,6 20,0"/>
+      <circle class="bud" cx="210" cy="12" r="4.5"/><circle class="bud" cx="10" cy="17" r="2.5"/><circle class="bud" cx="410" cy="17" r="2.5"/>
+    </svg>
   </header>
 
   <!-- STEP 1: question -->
   <section class="panel" id="ask-panel">
-    <h2>I · Ask your question</h2>
+    <h2><span class="num">I.</span> Ask your Question</h2>
     <textarea id="question" rows="3" maxlength="300" placeholder="What do you want to ask the cards? Write it in English, e.g. How can I make the most of this school year?"></textarea>
     <div class="actions">
-      <button id="draw" disabled>✦ Draw three cards ✦</button>
+      <button id="draw" disabled>Draw three Cards</button>
     </div>
     <p class="hint">Write your question first. The cards wait for you to ask.</p>
   </section>
 
   <!-- STEP 2: the spread -->
   <section class="panel" id="spread-panel" hidden>
-    <h2>II · The cards</h2>
+    <h2><span class="num">II.</span> The Cards</h2>
     <p class="question-echo" id="question-echo"></p>
     <div class="spread" id="spread"></div>
   </section>
 
   <!-- STEP 3: student's interpretation -->
   <section class="panel" id="yours-panel" hidden>
-    <h2>III · Your interpretation</h2>
-    <p class="hint" style="margin:0 0 12px">Look at the pictures and the meanings. How do the past, present and future cards answer your question? Write your reading.</p>
+    <h2><span class="num">III.</span> Your Interpretation</h2>
+    <p class="hint" style="margin:0 0 14px">Look at the pictures and the meanings. How do the past, present and future cards answer your question? Write your reading.</p>
     <textarea id="mine" rows="6" placeholder="I think the first card shows…"></textarea>
     <p class="hint" id="mine-hint">Write at least a few sentences to unlock the AI's interpretation.</p>
   </section>
 
   <!-- STEP 4: AI interpretation (hidden until clicked) -->
   <section class="panel veil" id="ai-panel" hidden>
-    <h2>IV · The AI's interpretation</h2>
-    <div class="orb"></div>
-    <button id="reveal" disabled>☽ Reveal the AI's reading ☾</button>
+    <h2><span class="num">IV.</span> The AI's Interpretation</h2>
+    <div class="seal" aria-hidden="true">AI</div>
+    <button id="reveal" disabled>Break the Seal &amp; Read</button>
     <div id="ai-status"></div>
     <div id="ai-text" hidden></div>
     <div class="actions" id="again-row" hidden>
-      <button id="again" class="ghost">✦ Ask a new question ✦</button>
+      <button id="again" class="ghost">Ask a new Question</button>
     </div>
   </section>
 
-  <p class="note">Tarot is a tool for reflection and storytelling. It does not predict the future, and neither does the AI.<br>🔒 Everything runs in your browser. Your question never leaves your device.</p>
+  <p class="note">Tarot is a tool for reflection and storytelling. It does not predict the future, and neither does the AI.<br>Everything runs in your browser. Your question never leaves your device.</p>
 
   <footer>
-    <p class="credits">Credits: by Bárbara Romero Ferrón,<br>with the invaluable help of Claude ✦</p>
+    <p class="credits">Credits: by Bárbara Romero Ferrón,<br>with the invaluable help of Claude</p>
     <p>Card art by Pamela Colman Smith (1909). Card meanings from A. E. Waite, <i>The Pictorial Key to the Tarot</i> (1910). Both in the public domain.</p>
   </footer>
 </main>
@@ -301,7 +343,7 @@ mine.addEventListener("input", updateReveal);
 function updateReveal() {
   const enough = mine.value.trim().split(/\s+/).filter(Boolean).length >= 15;
   $("mine-hint").textContent = enough
-    ? "✦ Well read. You can now reveal the AI's interpretation and compare."
+    ? "❦ Well read. You can now reveal the AI's interpretation and compare."
     : "Write at least a few sentences (15 words) to unlock the AI's interpretation.";
   $("reveal").disabled = !enough || revealing;
 }
@@ -338,7 +380,7 @@ function loadOracle() {
       },
     });
     oracle.backend = b;
-    setStatus(revealing ? "The oracle is reading your cards…" : "✦ The oracle is awake. Write your interpretation, then reveal its reading.");
+    setStatus(revealing ? "The oracle is reading your cards…" : "❦ The oracle is awake. Write your interpretation, then reveal its reading.");
     return oracle;
   })();
   oraclePromise.catch((err) => {
@@ -352,7 +394,7 @@ function setStatus(t) { $("ai-status").textContent = t; }
 
 const SYSTEM =
   "You are a warm, thoughtful tarot reader helping students in a classroom activity. " +
-  "Speak directly to the student as \"you\". Reply in 2 or 3 sentences of plain text, with no lists, headings or markdown. " +
+  "Speak directly to the student as \"you\". Always answer in simple English, in plain text, with no lists, headings or markdown. " +
   "Treat tarot as a tool for reflection, not a real prediction, and be kind and encouraging.";
 
 function cardLine({ card, reversed, position }) {
@@ -361,33 +403,19 @@ function cardLine({ card, reversed, position }) {
     `Traditional meaning: ${reversed ? card.reversed : card.upright}.`;
 }
 
-// One focused request per card, then a summary: small models stay on topic this way.
+// A single short reading: the message of the three cards.
 function buildSteps() {
-  const steps = reading.cards.map((c) => ({
-    title: `${c.position} · ${c.card.name}${c.reversed ? " (reversed)" : ""}`,
-    messages: [
-      { role: "system", content: SYSTEM },
-      { role: "user", content:
-        `The student's question: "${reading.question}"\n\n` +
-        `The card in the ${c.position.toUpperCase()} position is ${c.card.name}${c.reversed ? ", reversed" : ""}.\n` +
-        (c.card.description ? `Picture on the card: ${c.card.description}\n` : "") +
-        `Traditional meaning: ${c.reversed ? c.card.reversed : c.card.upright}.\n\n` +
-        `In 2 or 3 sentences, explain what this card in the ${c.position.toLowerCase()} position suggests about the student's question.` },
-    ],
-    tokens: 170,
-  }));
-  steps.push({
+  return [{
     title: "The message of the three cards",
     messages: [
       { role: "system", content: SYSTEM },
       { role: "user", content:
         `The student's question: "${reading.question}"\n\nThe three cards:\n` +
         reading.cards.map(cardLine).join("\n") +
-        `\n\nIn 2 or 3 sentences, combine the past, present and future cards into one encouraging message that answers the student's question.` },
+        `\n\nIn 3 or 4 simple sentences in English, combine the past, present and future cards into one encouraging message that answers the student's question.` },
     ],
-    tokens: 170,
-  });
-  return steps;
+    tokens: 150,
+  }];
 }
 
 const clean = (t) => t.replace(/\*\*|__|^#+\s*/gm, "").trim();
@@ -396,6 +424,7 @@ const finish = (t) => { t = clean(t); const i = Math.max(t.lastIndexOf(". "), t.
 
 $("reveal").onclick = async () => {
   revealing = true;
+  $("ai-panel").classList.add("opened");
   $("reveal").disabled = true;
   mine.readOnly = true;
   const out = $("ai-text");
@@ -419,7 +448,7 @@ $("reveal").onclick = async () => {
       await gen(step.messages, { max_new_tokens: step.tokens, do_sample: true, temperature: 0.7, top_p: 0.9, repetition_penalty: 1.1, streamer });
       para.textContent = finish(text);
     }
-    setStatus("✦ Compare: what did the AI notice that you didn't? What did you see that it missed?");
+    setStatus("❦ Compare: what did the AI notice that you didn't? What did you see that it missed?");
     $("again-row").hidden = false;
   } catch (err) {
     console.error(err);
@@ -432,11 +461,11 @@ $("reveal").onclick = async () => {
 $("again").onclick = () => {
   reading = null;
   q.value = ""; mine.value = ""; mine.readOnly = false;
-  $("ai-text").hidden = true; $("again-row").hidden = true;
+  $("ai-text").hidden = true; $("again-row").hidden = true; $("ai-panel").classList.remove("opened");
   ["spread-panel", "yours-panel", "ai-panel"].forEach((id) => ($(id).hidden = true));
   $("ask-panel").hidden = false;
   updateDraw(); updateReveal();
-  if (oracle) setStatus("✦ The oracle is awake. Write your interpretation, then reveal its reading.");
+  if (oracle) setStatus("❦ The oracle is awake. Write your interpretation, then reveal its reading.");
   window.scrollTo({ top: 0, behavior: "smooth" });
   q.focus();
 };
