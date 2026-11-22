@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Three-Card Oracle</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Cinzel+Decorative:wght@700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --night: #0b0819;
+    --deep: #160f33;
+    --violet: #2a1b5c;
+    --plum: #4b2a7b;
+    --gold: #d9b45b;
+    --gold-soft: #f1dca0;
+    --ivory: #f4ecd8;
+    --muted: #b7a9cf;
+    --rose: #e7a3c4;
+    --serif: "Cormorant Garamond", Georgia, serif;
+    --display: "Cinzel", Georgia, serif;
+  }
+  * { box-sizing: border-box; }
+  html { background: var(--night); }
+  body {
+    margin: 0; color: var(--ivory); font: 20px/1.55 var(--serif); min-height: 100vh;
+    background:
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(120, 70, 200, .45), transparent 70%),
+      radial-gradient(ellipse 60% 40% at 100% 100%, rgba(217, 180, 91, .12), transparent 70%),
+      linear-gradient(180deg, var(--deep), var(--night) 70%);
+    background-attachment: fixed;
+  }
+  /* starfield */
+  .stars, .stars::after {
+    position: fixed; inset: 0; pointer-events: none; z-index: 0; content: "";
+    background-image:
+      radial-gradient(1px 1px at 10% 20%, #fff, transparent 60%),
+      radial-gradient(1px 1px at 30% 70%, #fff, transparent 60%),
+      radial-gradient(1.5px 1.5px at 55% 15%, var(--gold-soft), transparent 60%),
+      radial-gradient(1px 1px at 75% 40%, #fff, transparent 60%),
+      radial-gradient(1px 1px at 90% 80%, #fff, transparent 60%),
+      radial-gradient(1.5px 1.5px at 20% 90%, var(--gold-soft), transparent 60%),
+      radial-gradient(1px 1px at 65% 60%, #fff, transparent 60%),
+      radial-gradient(1px 1px at 45% 45%, #fff, transparent 60%);
+    background-size: 420px 420px;
+    opacity: .7;
+  }
+  .stars::after { background-size: 260px 260px; animation: twinkle 5s ease-in-out infinite alternate; opacity: .5; }
+  @keyframes twinkle { from { opacity: .15 } to { opacity: .7 } }
+
+  main { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; padding: 40px 16px 80px; }
+
+  header { text-align: center; margin-bottom: 36px; }
+  .sigil { color: var(--gold); letter-spacing: 14px; font-size: 1.1rem; }
+  h1 {
+    font-family: "Cinzel Decorative", var(--display); font-weight: 700;
+    font-size: clamp(2rem, 6vw, 3.6rem); line-height: 1.15; margin: 10px 0;
+    background: linear-gradient(180deg, #fff6d8, var(--gold) 60%, #9c7a2c);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    filter: drop-shadow(0 0 18px rgba(217, 180, 91, .35));
+  }
+  .tagline { color: var(--muted); font-style: italic; font-size: 1.25rem; margin: 0; }
+
+  h2 {
+    font-family: var(--display); font-weight: 500; letter-spacing: 3px; text-transform: uppercase;
+    font-size: 1.05rem; color: var(--gold); margin: 0 0 14px; text-align: center;
+  }
+  h2::before, h2::after { content: " ✦ "; color: var(--plum); }
+
+  .panel {
+    background: linear-gradient(180deg, rgba(42, 27, 92, .55), rgba(22, 15, 51, .7));
+    border: 1px solid rgba(217, 180, 91, .45); border-radius: 18px;
+    padding: 26px 22px; margin-bottom: 28px; position: relative;
+    box-shadow: 0 0 40px rgba(75, 42, 123, .35), inset 0 0 0 4px rgba(11, 8, 25, .6), inset 0 0 0 5px rgba(217, 180, 91, .18);
+  }
+
+  textarea {
+    width: 100%; border-radius: 12px; border: 1px solid rgba(217, 180, 91, .5);
+    background: rgba(11, 8, 25, .7); color: var(--ivory); padding: 14px 16px;
+    font: 1.15rem/1.5 var(--serif); resize: vertical;
+  }
+  textarea:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 16px rgba(217, 180, 91, .35); }
+  textarea::placeholder { color: #8a7da6; font-style: italic; }
+
+  .actions { display: flex; justify-content: center; gap: 12px; margin-top: 16px; flex-wrap: wrap; }
+  button {
+    font-family: var(--display); letter-spacing: 2px; text-transform: uppercase; font-size: .85rem;
+    color: var(--night); background: linear-gradient(180deg, #f3dc98, var(--gold) 55%, #a8842f);
+    border: 0; border-radius: 999px; padding: 13px 26px; cursor: pointer;
+    box-shadow: 0 0 18px rgba(217, 180, 91, .35); transition: transform .15s, box-shadow .15s;
+  }
+  button:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 0 28px rgba(217, 180, 91, .6); }
+  button:disabled { opacity: .4; cursor: not-allowed; box-shadow: none; }
+  button.ghost { background: transparent; color: var(--gold-soft); border: 1px solid rgba(217, 180, 91, .6); box-shadow: none; }
+  .hint { color: var(--muted); font-style: italic; text-align: center; margin: 10px 0 0; font-size: 1.05rem; }
+
+  .question-echo { text-align: center; font-style: italic; font-size: 1.35rem; color: var(--gold-soft); margin: 0 0 22px; }
+
+  /* spread */
+  .spread { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+  @media (max-width: 820px) { .spread { grid-template-columns: 1fr; max-width: 420px; margin: 0 auto; } }
+  .slot { display: flex; flex-direction: column; align-items: center; }
+  .position { font-family: var(--display); letter-spacing: 4px; text-transform: uppercase; color: var(--rose); font-size: .85rem; margin-bottom: 10px; }
+  .card { width: 190px; aspect-ratio: 300 / 527; perspective: 1000px; margin-bottom: 16px; }
+  .card-inner { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform 1s cubic-bezier(.3,.7,.2,1); }
+  .card.flipped .card-inner { transform: rotateY(180deg); }
+  .face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 10px; overflow: hidden;
+    box-shadow: 0 0 0 2px rgba(217, 180, 91, .7), 0 10px 30px rgba(0, 0, 0, .6), 0 0 30px rgba(217, 180, 91, .2); }
+  .face img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .front { transform: rotateY(180deg); }
+  .card.reversed .front img { transform: rotate(180deg); }
+  .card.flipped { animation: glow 2.5s ease-in-out 1s infinite alternate; border-radius: 10px; }
+  @keyframes glow { to { filter: drop-shadow(0 0 14px rgba(217, 180, 91, .55)); } }
+
+  .info { width: 100%; text-align: left; opacity: 0; transform: translateY(8px); transition: opacity .8s .6s, transform .8s .6s; }
+  .slot.revealed .info { opacity: 1; transform: none; }
+  .card-name { font-family: var(--display); font-size: 1.15rem; color: var(--gold-soft); text-align: center; margin: 0; }
+  .card-meta { text-align: center; color: var(--muted); font-size: .95rem; margin: 2px 0 10px; letter-spacing: 1px; }
+  .badge { display: inline-block; font-family: var(--display); font-size: .7rem; letter-spacing: 2px; padding: 2px 10px; border-radius: 999px;
+    border: 1px solid var(--rose); color: var(--rose); margin-left: 6px; vertical-align: middle; }
+  .meaning { margin: 0 0 10px; padding: 10px 12px; border-radius: 10px; background: rgba(11, 8, 25, .45); border-left: 3px solid rgba(183, 169, 207, .35); font-size: 1.05rem; }
+  .meaning b { font-family: var(--display); font-weight: 500; letter-spacing: 1.5px; font-size: .75rem; text-transform: uppercase; color: var(--muted); display: block; }
+  .meaning.active { border-left-color: var(--gold); background: rgba(217, 180, 91, .09); }
+  .meaning.active b { color: var(--gold); }
+  .meaning.inactive { opacity: .55; }
+  .picture { font-style: italic; color: var(--muted); margin: 0 0 10px; font-size: 1.02rem; }
+
+  /* AI reveal */
+  .veil { text-align: center; }
+  .veil .orb {
+    width: 92px; height: 92px; border-radius: 50%; margin: 6px auto 14px;
+    background: radial-gradient(circle at 35% 30%, #fff 0, #d9c8ff 12%, #7b55c9 45%, #2a1b5c 75%);
+    box-shadow: 0 0 40px rgba(155, 120, 230, .65), inset 0 0 20px rgba(255, 255, 255, .3);
+    animation: orb 4s ease-in-out infinite;
+  }
+  @keyframes orb { 50% { transform: scale(1.06); box-shadow: 0 0 60px rgba(217, 180, 91, .6), inset 0 0 20px rgba(255, 255, 255, .3); } }
+  #ai-status { color: var(--muted); font-style: italic; font-size: 1rem; margin-top: 10px; }
+  .ai-head { font-family: var(--display); font-weight: 500; color: var(--gold); font-size: 1rem; letter-spacing: 2px; margin: 18px 0 4px; }
+  .ai-para { margin: 0 0 6px; }
+  #ai-text { font-size: 1.15rem; line-height: 1.65; margin-top: 12px; text-align: left; }
+  #ai-text .cursor { display: inline-block; width: .5em; animation: blinkc 1s steps(1) infinite; color: var(--gold); }
+  @keyframes blinkc { 50% { opacity: 0 } }
+
+  .note { font-size: .95rem; color: var(--muted); text-align: center; font-style: italic; }
+  footer { text-align: center; color: var(--muted); font-size: 1rem; margin-top: 30px; }
+  footer .credits { font-family: var(--display); color: var(--gold-soft); letter-spacing: 1px; font-size: .95rem; }
+  [hidden] { display: none !important; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="stars"></div>
+<main>
+  <header>
+    <div class="sigil">☾ ✦ ☉ ✦ ☽</div>
+    <h1>The Three-Card Oracle</h1>
+    <p class="tagline">Ask a question. Draw three cards. Read what they whisper.</p>
+  </header>
+
+  <!-- STEP 1: question -->
+  <section class="panel" id="ask-panel">
+    <h2>I · Ask your question</h2>
+    <textarea id="question" rows="3" maxlength="300" placeholder="What do you want to ask the cards? Write it in English, e.g. How can I make the most of this school year?"></textarea>
+    <div class="actions">
+      <button id="draw" disabled>✦ Draw three cards ✦</button>
+    </div>
+    <p class="hint">Write your question first. The cards wait for you to ask.</p>
+  </section>
+
+  <!-- STEP 2: the spread -->
+  <section class="panel" id="spread-panel" hidden>
+    <h2>II · The cards</h2>
+    <p class="question-echo" id="question-echo"></p>
+    <div class="spread" id="spread"></div>
+  </section>
+
+  <!-- STEP 3: student's interpretation -->
+  <section class="panel" id="yours-panel" hidden>
+    <h2>III · Your interpretation</h2>
+    <p class="hint" style="margin:0 0 12px">Look at the pictures and the meanings. How do the past, present and future cards answer your question? Write your reading.</p>
+    <textarea id="mine" rows="6" placeholder="I think the first card shows…"></textarea>
+    <p class="hint" id="mine-hint">Write at least a few sentences to unlock the AI's interpretation.</p>
+  </section>
+
+  <!-- STEP 4: AI interpretation (hidden until clicked) -->
+  <section class="panel veil" id="ai-panel" hidden>
+    <h2>IV · The AI's interpretation</h2>
+    <div class="orb"></div>
+    <button id="reveal" disabled>☽ Reveal the AI's reading ☾</button>
+    <div id="ai-status"></div>
+    <div id="ai-text" hidden></div>
+    <div class="actions" id="again-row" hidden>
+      <button id="again" class="ghost">✦ Ask a new question ✦</button>
+    </div>
+  </section>
+
+  <p class="note">Tarot is a tool for reflection and storytelling. It does not predict the future, and neither does the AI.<br>🔒 Everything runs in your browser. Your question never leaves your device.</p>
+
+  <footer>
+    <p class="credits">Credits: by Bárbara Romero Ferrón,<br>with the invaluable help of Claude ✦</p>
+    <p>Card art by Pamela Colman Smith (1909). Card meanings from A. E. Waite, <i>The Pictorial Key to the Tarot</i> (1910). Both in the public domain.</p>
+  </footer>
+</main>
+
+<script type="module">
+import { pipeline, TextStreamer, env } from "https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1";
+env.allowLocalModels = false;
+
+const $ = (id) => document.getElementById(id);
+const POSITIONS = ["Past", "Present", "Future"];
+const REVERSED_CHANCE = 0.3;
+const ROMAN = ["0", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII", "XIII", "XIV", "XV", "XVI", "XVII", "XVIII", "XIX", "XX", "XXI"];
+
+let deck = [];
+let reading = null; // { question, cards: [{card, reversed, position}] }
+
+// preload the deck and card back
+fetch("cards.json").then((r) => r.json()).then((d) => { deck = d; updateDraw(); });
+new Image().src = "cards/CardBacks.jpg";
+
+// ---------- Step 1 ----------
+const q = $("question");
+function updateDraw() { $("draw").disabled = !(deck.length && q.value.trim().length >= 5); }
+q.addEventListener("input", updateDraw);
+
+function randomInt(n) {
+  const a = new Uint32Array(1);
+  crypto.getRandomValues(a);
+  return a[0] % n;
+}
+function drawThree() {
+  const picked = new Set();
+  while (picked.size < 3) picked.add(randomInt(deck.length));
+  return [...picked].map((i, k) => ({ card: deck[i], reversed: Math.random() < REVERSED_CHANCE, position: POSITIONS[k] }));
+}
+
+$("draw").onclick = () => {
+  reading = { question: q.value.trim(), cards: drawThree() };
+  renderSpread();
+  $("ask-panel").hidden = true;
+  $("spread-panel").hidden = false;
+  $("yours-panel").hidden = false;
+  $("ai-panel").hidden = false;
+  $("spread-panel").scrollIntoView({ behavior: "smooth", block: "start" });
+  loadOracle(); // start downloading the AI while the student reads and writes
+};
+
+// ---------- Step 2 ----------
+function el(tag, cls, text) {
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (text != null) e.textContent = text;
+  return e;
+}
+function meaningBox(label, text, state) {
+  const box = el("div", "meaning " + state);
+  box.append(el("b", null, label), document.createTextNode(text + "."));
+  return box;
+}
+function renderSpread() {
+  $("question-echo").textContent = `“${reading.question}”`;
+  const spread = $("spread");
+  spread.innerHTML = "";
+  reading.cards.forEach(({ card, reversed, position }, i) => {
+    const slot = el("div", "slot");
+    slot.append(el("div", "position", position));
+
+    const cardEl = el("div", "card" + (reversed ? " reversed" : ""));
+    cardEl.innerHTML = `<div class="card-inner">
+        <div class="face back"><img src="cards/CardBacks.jpg" alt="Card back"></div>
+        <div class="face front"><img alt=""></div></div>`;
+    const img = cardEl.querySelector(".front img");
+    img.src = `cards/${card.id}.jpg`;
+    img.alt = card.name + (reversed ? " (reversed)" : "");
+    slot.append(cardEl);
+
+    const info = el("div", "info");
+    const name = el("p", "card-name", card.name);
+    if (reversed) name.append(el("span", "badge", "Reversed"));
+    info.append(name);
+    info.append(el("p", "card-meta", card.arcana === "Major"
+      ? `Major Arcana · ${ROMAN[card.number]}`
+      : `Minor Arcana · Suit of ${card.suit}`));
+    if (card.description) info.append(el("p", "picture", card.description));
+    info.append(meaningBox("Upright meaning", card.upright, reversed ? "inactive" : "active"));
+    info.append(meaningBox("Reversed meaning", card.reversed, reversed ? "active" : "inactive"));
+    slot.append(info);
+    spread.append(slot);
+
+    setTimeout(() => { cardEl.classList.add("flipped"); slot.classList.add("revealed"); }, 700 + i * 900);
+  });
+}
+
+// ---------- Step 3 ----------
+const mine = $("mine");
+mine.addEventListener("input", updateReveal);
+function updateReveal() {
+  const enough = mine.value.trim().split(/\s+/).filter(Boolean).length >= 15;
+  $("mine-hint").textContent = enough
+    ? "✦ Well read. You can now reveal the AI's interpretation and compare."
+    : "Write at least a few sentences (15 words) to unlock the AI's interpretation.";
+  $("reveal").disabled = !enough || revealing;
+}
+
+// ---------- Step 4: the AI oracle (runs in the browser) ----------
+let oracle = null, oraclePromise = null, revealing = false;
+const files = {};
+
+async function pickBackend() {
+  try {
+    const adapter = await navigator.gpu?.requestAdapter();
+    if (adapter && adapter.features.has("shader-f16")) {
+      return { model: "onnx-community/Llama-3.2-1B-Instruct-q4f16", device: "webgpu", dtype: "q4f16", size: "1.2 GB" };
+    }
+  } catch (e) { /* no WebGPU */ }
+  // Fallback for devices without WebGPU: smaller and simpler, but works almost everywhere.
+  return { model: "onnx-community/Qwen2.5-0.5B-Instruct", device: "wasm", dtype: "q8", size: "500 MB" };
+}
+
+function loadOracle() {
+  if (oraclePromise) return oraclePromise;
+  oraclePromise = (async () => {
+    const b = await pickBackend();
+    setStatus(`The oracle is waking up… (downloading the AI, about ${b.size}, only the first time)`);
+    oracle = await pipeline("text-generation", b.model, {
+      device: b.device, dtype: b.dtype,
+      progress_callback: (p) => {
+        if (p.status === "progress" && p.total) {
+          files[p.file] = p;
+          const loaded = Object.values(files).reduce((s, f) => s + f.loaded, 0);
+          const total = Object.values(files).reduce((s, f) => s + f.total, 0);
+          setStatus(`The oracle is waking up… ${Math.floor((loaded / total) * 100)}%`);
+        }
+      },
+    });
+    oracle.backend = b;
+    setStatus(revealing ? "The oracle is reading your cards…" : "✦ The oracle is awake. Write your interpretation, then reveal its reading.");
+    return oracle;
+  })();
+  oraclePromise.catch((err) => {
+    console.error(err);
+    setStatus("The oracle could not wake up (the AI failed to load). Try Chrome or Edge on a laptop, check your internet, and reload.");
+    oraclePromise = null;
+  });
+  return oraclePromise;
+}
+function setStatus(t) { $("ai-status").textContent = t; }
+
+const SYSTEM =
+  "You are a warm, thoughtful tarot reader helping students in a classroom activity. " +
+  "Speak directly to the student as \"you\". Reply in 2 or 3 sentences of plain text, with no lists, headings or markdown. " +
+  "Treat tarot as a tool for reflection, not a real prediction, and be kind and encouraging.";
+
+function cardLine({ card, reversed, position }) {
+  return `${position}: ${card.name}${reversed ? " (reversed)" : ""}. ` +
+    (card.description ? `Picture: ${card.description} ` : "") +
+    `Traditional meaning: ${reversed ? card.reversed : card.upright}.`;
+}
+
+// One focused request per card, then a summary: small models stay on topic this way.
+function buildSteps() {
+  const steps = reading.cards.map((c) => ({
+    title: `${c.position} · ${c.card.name}${c.reversed ? " (reversed)" : ""}`,
+    messages: [
+      { role: "system", content: SYSTEM },
+      { role: "user", content:
+        `The student's question: "${reading.question}"\n\n` +
+        `The card in the ${c.position.toUpperCase()} position is ${c.card.name}${c.reversed ? ", reversed" : ""}.\n` +
+        (c.card.description ? `Picture on the card: ${c.card.description}\n` : "") +
+        `Traditional meaning: ${c.reversed ? c.card.reversed : c.card.upright}.\n\n` +
+        `In 2 or 3 sentences, explain what this card in the ${c.position.toLowerCase()} position suggests about the student's question.` },
+    ],
+    tokens: 170,
+  }));
+  steps.push({
+    title: "The message of the three cards",
+    messages: [
+      { role: "system", content: SYSTEM },
+      { role: "user", content:
+        `The student's question: "${reading.question}"\n\nThe three cards:\n` +
+        reading.cards.map(cardLine).join("\n") +
+        `\n\nIn 2 or 3 sentences, combine the past, present and future cards into one encouraging message that answers the student's question.` },
+    ],
+    tokens: 170,
+  });
+  return steps;
+}
+
+const clean = (t) => t.replace(/\*\*|__|^#+\s*/gm, "").trim();
+// if the AI ran out of room mid-sentence, end at the last complete sentence
+const finish = (t) => { t = clean(t); const i = Math.max(t.lastIndexOf(". "), t.lastIndexOf("! "), t.lastIndexOf("? ")); return /[.!?]["”]?$/.test(t) || i < 0 ? t : t.slice(0, i + 1); };
+
+$("reveal").onclick = async () => {
+  revealing = true;
+  $("reveal").disabled = true;
+  mine.readOnly = true;
+  const out = $("ai-text");
+  out.hidden = false;
+  out.textContent = "";
+  try {
+    if (!oracle) setStatus("The oracle is still waking up. Your reading will begin as soon as it's ready…");
+    const gen = await loadOracle();
+    const cursor = el("span", "cursor", "▍");
+    for (const step of buildSteps()) {
+      setStatus("The oracle is reading your cards…");
+      out.append(el("h3", "ai-head", step.title));
+      const para = el("p", "ai-para");
+      out.append(para);
+      let text = "";
+      para.append(cursor);
+      const streamer = new TextStreamer(gen.tokenizer, {
+        skip_prompt: true, skip_special_tokens: true,
+        callback_function: (t) => { text += t; para.textContent = clean(text); para.append(cursor); },
+      });
+      await gen(step.messages, { max_new_tokens: step.tokens, do_sample: true, temperature: 0.7, top_p: 0.9, repetition_penalty: 1.1, streamer });
+      para.textContent = finish(text);
+    }
+    setStatus("✦ Compare: what did the AI notice that you didn't? What did you see that it missed?");
+    $("again-row").hidden = false;
+  } catch (err) {
+    console.error(err);
+    setStatus("Something disturbed the oracle (the AI hit an error). Try again, or reload the page.");
+    $("reveal").disabled = false;
+  }
+  revealing = false;
+};
+
+$("again").onclick = () => {
+  reading = null;
+  q.value = ""; mine.value = ""; mine.readOnly = false;
+  $("ai-text").hidden = true; $("again-row").hidden = true;
+  ["spread-panel", "yours-panel", "ai-panel"].forEach((id) => ($(id).hidden = true));
+  $("ask-panel").hidden = false;
+  updateDraw(); updateReveal();
+  if (oracle) setStatus("✦ The oracle is awake. Write your interpretation, then reveal its reading.");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+  q.focus();
+};
+</script>
+</body>
+</html>
